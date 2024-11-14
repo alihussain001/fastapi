@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Response, status, HTTPException
 from fastapi.params import Body
 from pydantic import BaseModel
 from typing import Optional
@@ -58,6 +58,8 @@ def create_post(post: Post):
 def get_id(id: int):
     print(id)
     post = find_post(id)
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"post with id {id} was not found")
     return {"post-message": post}
 
 @app.post("/data_check")
@@ -72,4 +74,22 @@ def data_check(data: order):
 def data_id(id: int):
     print(id)
     data = send_data(id)
+    if not data:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"data with this id {id} was not found")
     return {"post_message": data}
+
+
+# @app.get("/new_app")
+# def new_app(app: order):
+#   my_app = app.dict()
+#   my_app[id] = randrange(0, 100)
+#   new_data.append(my_app)
+#   return {"message": new_data}
+
+
+# @app.post("/my_app")
+# def new_app(app: Post):
+#     new_app = app.dict()
+#     new_app[id] = randrange(0, 10)
+#     my_posts.append(new_app)
+#     return{"message": "this is your app"}
